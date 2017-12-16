@@ -9,17 +9,11 @@
 #include <iostream>
 
 
-
-
-// initialize array with ();
-
-
-
 void getInputData(std::string &num1, std::string &num2) {
-    std::cout<<"Type the first number:"<<std::endl;
-    std::cin>>num1;
-    std::cout<<"Type the second number:"<<std::endl;
-    std::cin>>num2;
+    std::cout << "Type the first number:" << std::endl;
+    std::cin >> num1;
+    std::cout << "Type the second number:" << std::endl;
+    std::cin >> num2;
 }
 
 int* convertStringToArray(std::string num) {
@@ -33,14 +27,14 @@ int* convertStringToArray(std::string num) {
 }
 
 int* addTwoHalf(int* a, int* b, int l) {
-    int* result = new int[l]();
+    int* result = new int[l];
     for (int i = 0; i < l; i++) {
         result[i] = a[i] + b[i];
     }
     return result;
 }
 int* addUp(int* a, int* b, int* c, int l) { 
-    int* result = new int[2 * l]();
+    int* result = new int[2 * l];
     for (int i = 0; i < l; i++) {
         result[i] = a[i];
         result[i + l] = b[i]; 
@@ -125,4 +119,3 @@ int main(){
     delete [] result;
     return 0;
 }
-
