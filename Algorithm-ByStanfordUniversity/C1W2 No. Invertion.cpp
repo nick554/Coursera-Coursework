@@ -10,9 +10,45 @@
 #include <vector>
 #include <fstream>
 
-long count = 0;
 
-std::vector< int > getOriginalInput(){
+int merge(int* array, int* helper, int start, int  mid, int end) {
+    int l = start;
+    int r = mid;
+    int i = start;
+    int count = 0;
+    while (l < mid && r < end) {
+        if (array[l] <= array[r]) {
+            helper[i++] = array[l++];
+        } else {
+            helper[i++] = array[r++];
+            count += mid-l;
+        }
+    }
+    while (l < mid) {
+        helper[i++] = array[l++];
+    }
+    for (int j = i-1; j >= start; j--) {
+        array[j] = helper[j];
+    }
+    return count;
+}
+int countInversionsByMergesort(
+           int* array, int* helper, int start, int end) {        // can reduce one parameter
+    // base case
+    if (start >= end - 1)  return 0;
+    
+    // split into two subproblem
+    int mid = start + (end - start)/2;
+    int count_left = countInversionsByMergesort( array, helper, start, mid);
+    int count_right = countInversionsByMergesort( array, helper, mid, end);
+    
+    // merge back to one
+    int count = merge(array, helper, start, mid, end);
+
+    return (count + count_left + count_right);
+};
+
+std::vector< int > getOriginalInput() {
     // assumption: input size < 200000
     std::ifstream file;
     file.open( "/Users/chenxk/Desktop/IntegerArray.txt", std::ios::in);
@@ -31,42 +67,28 @@ std::vector< int > getOriginalInput(){
     return result;
 };
 
-std::vector< int > countInversionsByMergesort(std::vector< int > nums){
-    // base case
-    if(nums.size() ==  1)  return nums;
-    
-    // split into two subproblem
-    std::vector< int > LeftPart,RightPart;
-    LeftPart.assign(nums.begin(), nums.begin() + nums.size()/2);
-    RightPart.assign(nums.begin() + nums.size()/2, nums.end());
-    LeftPart = countInversionsByMergesort( LeftPart );
-    RightPart = countInversionsByMergesort( RightPart );
-    
-    // merge back to one
-    for(int i = 0, l = 0, r = 0; i<nums.size(); i++){
-        if (l == LeftPart.size() && r != RightPart.size())
-            nums[i] = RightPart[r++];
-        else if (r == RightPart.size())
-            nums[i] = LeftPart[l++];
-        else if (LeftPart[l]>RightPart[r]){
-            nums[i] = RightPart[r++];
-            count += LeftPart.size()-l;
-        } else {
-            nums[i] = LeftPart[l++];
-        }
+int* convertToArray(std::vector< int > array) {
+    int n = array.size();
+    int* result = new int[n];
+    for (int i = 0; i < n; i++) {
+        result[i] = array[i];
     }
-        
-    return nums;
+    return result;
 };
 
-int main(){
+int main() {
     // get input array
     std::vector< int > OriginalArray = getOriginalInput();
-    std::cout << "input success with " << OriginalArray.size() << " lines" << std::endl;
-
-    // count inversions using mergesort
-    std::vector< int > TotalInversions = countInversionsByMergesort( OriginalArray );
-    std::cout << count << std::endl;
+    int n = OriginalArray.size();
+    std::cout << "input success with " << n << " lines" << std::endl;
+    int* array = convertToArray( OriginalArray );
     
+    // count inversions using mergesort
+    int* helper = new int[n];
+    int count = countInversionsByMergesort(array, helper, 0, n);
+    std::cout << count << std::endl;
+
+    delete [] array;
+    delete [] helper;
     return 0;
-}
+};
