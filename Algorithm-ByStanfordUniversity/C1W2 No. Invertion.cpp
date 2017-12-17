@@ -11,39 +11,37 @@
 #include <fstream>
 
 
-int merge(int* array, int* helper, int start, int  mid, int end) {
-    int l = start;
-    int r = mid;
-    int i = start;
+int merge(int* array, int* helper, int n) {
+    int l = 0;
+    int r = n/2;
+    int i = 0;
     int count = 0;
-    while (l < mid && r < end) {
+    while (l < n/2 && r < n) {
         if (array[l] <= array[r]) {
             helper[i++] = array[l++];
         } else {
             helper[i++] = array[r++];
-            count += mid-l;
+            count += n/2 - l;
         }
     }
-    while (l < mid) {
+    while (l < n/2) {
         helper[i++] = array[l++];
     }
-    for (int j = i-1; j >= start; j--) {
+    for (int j = i-1; j >= 0; j--) {
         array[j] = helper[j];
     }
     return count;
 }
-int countInversionsByMergesort(
-           int* array, int* helper, int start, int end) {        // can reduce one parameter
+int countInversionsByMergesort(int* array, int* helper, int n) {
     // base case
-    if (start >= end - 1)  return 0;
+    if (n <= 1)  return 0;
     
     // split into two subproblem
-    int mid = start + (end - start)/2;
-    int count_left = countInversionsByMergesort( array, helper, start, mid);
-    int count_right = countInversionsByMergesort( array, helper, mid, end);
+    int count_left = countInversionsByMergesort(array, helper, n/2);
+    int count_right = countInversionsByMergesort(array + n/2, helper, n - n/2);
     
     // merge back to one
-    int count = merge(array, helper, start, mid, end);
+    int count = merge(array, helper, n);
 
     return (count + count_left + count_right);
 };
@@ -85,7 +83,7 @@ int main() {
     
     // count inversions using mergesort
     int* helper = new int[n];
-    int count = countInversionsByMergesort(array, helper, 0, n);
+    int count = countInversionsByMergesort(array, helper, n);
     std::cout << count << std::endl;
 
     delete [] array;
