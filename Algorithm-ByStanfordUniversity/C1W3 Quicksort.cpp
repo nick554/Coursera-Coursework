@@ -10,8 +10,60 @@
 #include <vector>
 #include <iostream>
 
+
 long count = 0;
 
+void quickSort(std::vector<int> &nums, int begin, int end, int method) {
+    //base case
+    if (begin == end || begin == end + 1) {
+        return;
+    }
+    
+    // choose pivot
+    switch (method) {
+        case 1:
+            break;
+        case 2: 
+            swap(nums, begin++, end);
+            break;
+        case 3:
+            int median = begin + (end - begin)/2;
+            if ((nums[median] - nums[begin]) * (nums[median] - nums[end]) < 0) {
+                swap(nums, begin, median);
+            } else if ((nums[end] - nums[median]) * (nums[end] - nums[begin]) <0)
+                swap(nums, begin, end);
+            }
+            break;
+    }
+    int pivot = nums[begin++];
+   
+    // partition
+    int i = begin;
+    for (int j = begin; j<end + 1; j++)
+        if (nums[j] < pivot) {
+            swap(nums, i++, j);
+        }
+    }
+    // put pivot in the right place
+    swap(nums, --begin, i - 1);
+    
+    // count # of comparison
+    count += end - begin;
+    //for (int i = 0; i < nums.size(); i++) std::cout << nums[i] << std::endl;
+
+    // solve for subarray
+    quickSort(nums, begin, i-2, method);
+    quickSort(nums, i, end, method);
+};
+
+// swap two element
+void swap(std::vector<int> &nums, int i, int j) {
+    if (nums[i] != nums[j]) {
+        nums[i] ^= nums[j];
+        nums[j] ^= nums[i];
+        nums[i] ^= nums[j];
+    }
+};
 std::vector< int > getOriginalArray() {
     // preallocation
     std::vector<int> result(20000);
@@ -30,97 +82,16 @@ std::vector< int > getOriginalArray() {
     file.close();
     return result;
 };
-
-// swap two element
-void swap(std::vector<int> &nums, int i, int j) {
-    if (nums[i] != nums[j]) {
-        nums[i] ^= nums[j];
-        nums[j] ^= nums[i];
-        nums[i] ^= nums[j];
-    }
-};
-
-void quickSort(std::vector<int> &nums, int begin, int end, int method) {
-    //base case
-    if (begin == end || begin == end + 1) {
-        return;
-    }
-    
-    // choose pivot
-    int pivot;
-    if (method == 1) {
-        pivot = nums[begin++];
-    } else {
-        pivot = nums[end];
-        swap(nums, begin++, end);
-    }
-    
-    // partition
-    int i = begin;
-    for (int j = begin; j<end + 1; j++)
-        if (nums[j] < pivot) {
-            swap(nums, i++, j);
-        }
-    }
-    
-    // put pivot in the right place
-    swap(nums, --begin, i - 1);
-    
-    // count # of comparison
-    count += end - begin;
-    
-    //for (int i = 0; i < nums.size(); i++) std::cout << nums[i] << std::endl;
-
-    // solve for subarray
-    quickSort(nums, begin, i-2, method);
-    quickSort(nums, i, end, method);
-};
-
-void quickSort(std::vector<int> &nums, int begin, int end) {
-    //base case
-    if (begin == end||begin == end +1) {
-        return;
-    }
-    
-    // choose of pivot and swap the pivot with the first element
-    int pivot;
-    int median = begin + (end - begin)/2;
-    if ((nums[median] - nums[begin]) * (nums[median] - nums[end]) < 0) {
-        swap(nums, begin, median);
-    } else if ((nums[end] - nums[median]) * (nums[end] - nums[begin]) <0) {
-        swap(nums, begin, end);
-    }
-    pivot = nums[begin];
-
-    // partition
-    int i = begin + 1;
-    for (int j = i; j < end + 1; j++) {
-        if (nums[j] < pivot) {
-            swap(nums,i++,j);
-        }
-    }
-    
-    // put pivot in the right place
-    swap(nums, begin, i-1);
-    
-    // count # of comparison
-    count += end - begin;
-    
-    // solve for subarray
-    quickSort(nums, begin, i-2);
-    quickSort(nums, i, end);
-};
-
 int main(){
     // get file input
-    std::vector<int> nums = getOriginalArray();
+    std::vector< int > nums = getOriginalArray();
     
     int begin = 0;
     int end = nums.size() - 1;
     
     // choose method { method 1: use first element as pivot. method 2: use last element as pivot. method 3: use'median of three' as pivot}
     int method = 1;
-    switch (method){
+    switch (method) {
         case 1: std::cout<<"# of comparison using first element as a pivot: "<<std::endl; break;
         case 2: std::cout<<"# of comparison using last element as a pivot: "<<std::endl; break;
         case 3: std::cout<<"# of comparison using 'Median-of-three' element as a pivot: "<<std::endl; break;
@@ -128,12 +99,13 @@ int main(){
     }
     
     // sort by quicksort
-    if (method != 3) {
+    quickSort(nums, begin, end, method);
+/*    if (method != 3) {
         quickSort(nums, begin, end, method);
     } else {
         quickSort(nums, begin, end);
     }
-    
+*/    
     // print output
     std::cout<<"# of compare = "<<count<<std::endl;
 
