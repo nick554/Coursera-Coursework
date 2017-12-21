@@ -18,10 +18,10 @@ public:
         x = i;
         y = j;
     };
-    int head() {
+    int getHead() {
         return x;
     };
-    int tail() {
+    int getTail() {
         return y;
     };
 };
@@ -43,7 +43,6 @@ int getUndirctedGraph(std::vector< std::vector< int > >& VertexList, std::vector
         // get No. of current vertex
         int vertex;
         CurrentVertexInfo >> vertex;
-        
         // get edges head from current Vertex to others with large index
         int temp;
         std::vector< int > AdjacentNodes;
@@ -64,53 +63,55 @@ int getUndirctedGraph(std::vector< std::vector< int > >& VertexList, std::vector
     return 0;
 };
 
-// for shuffle edges
-void swap(int* array,i int i, int j) {
-    int temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-} 
-int randomList(int* List, int size) {
-    int Index;
-    
+// generate a randomized sequence to pick up edges 
+int* getRandomList(int size) {
+    // initialzie List
+    int* result = new int[ EdgesCnt ];
+
     srand( (unsigned)time(NULL) );
     for (int i = 0; i<size; i++) {
-        Index = rand() % (i+1);
-        swap(List, Index, i);
+        int index = rand() % (i+1);
+        result[i] = result[ index ];
+        result[ index ] = i;
     }
     
-    return 0;
+    return result;
 };
 
-// Union Find
-class GraphMinCut{
-    std::vector< int > List;
+// A Class to Implememnt Union Find for Graph min cut
+class Contraction{
+    std::vector< int > Status;
 public:
     int Uncontracted;
-    GraphMinCut(int n) {
-        for (int i = 0; i<n+1; i++) {
-            List.push_back(i);
+    Contraction(int n) {
+    // initialize the class with no union
+        for (int i = 0; i < n+1; i++) {
+            Status.push_back(i);
         }
         Uncontracted = n;
     };
-    int Root(int i) {
-        if (List[i] == i) {
+
+    int getRoot(int i) {
+    // find the root of one element
+        if (Status[i] == i) {
             return i;
         }
-        return List[i] = Root( List[i] );
+        // compress the path while finding the root
+        return Status[i] = getRoot( List[i] );
     };
-    int Contraction(int i,int j) {
-        int root_x = Root(i);
-        int root_y = Root(j);
+    void combine(int i,int j) {
+    // make contration between two element
+        int root_x = getRoot(i);
+        int root_y = getRoot(j);
+        // use the smaller element number
         if (root_x > root_y) {
-            List[root_x] = root_y;
-            List[i] = root_y;
+            Status[root_x] = root_y;
+            Status[i] = root_y;
         } else {
-            List[root_y] = root_x;
-            List[j] = root_x;
+            Status[root_y] = root_x;
+            Status[j] = root_x;
         }
-        
-        return 0;
+        Uncontracted--;
     };
 };
 
@@ -121,7 +122,6 @@ int main(){
     
     // read input file
     getUndirctedGraph(VertexList, edges);
-    
     // get the problem size
     int VertexCnt = VertexList.size()-1;
     int EdgesCnt = edges.size();
@@ -133,37 +133,30 @@ int main(){
     start = time(NULL);
     // repeat random contraction to find the min cut
     for (int n = 0; n< 50000; n++) {
-        // generate records for one random contraction
-        int EdgePickList [ EdgesCnt ];
-        for (int i = 0; i<EdgesCnt; i++) {
-            EdgePickList[i] = i;
-        }
-
         // generate sequences the edges are picked
-        randomList(EdgePickList, EdgesCnt);
-        //for(int i = 0; i<EdgesCnt;i++) std::cout<<EdgePickList[i]<<std::endl;
-        
+        int* EdgeQueue = getRandomList( EdgesCnt );
+        //for(int i = 0; i<EdgesCnt;i++) std::cout<<EdgeQueue[i]<<std::endl;
+
         // start contraction
-        GraphMinCut CntrctVtx( VertexCnt );
-        int chosenEdgesCnt = 0;
+        Contraction Attempt( VertexCnt );
+        int ChosenEdgeCnt = 0;
         
-        while (CntrctVtx.Uncontracted > 2) {
-            edge CurrentEdge = edges[ EdgePickList[ chosenEdgesCnt++ ] ];
-            int head = CurrentEdge.head();
-            int tail = CurrentEdge.tail();
-            if (CntrctVtx.Root(head) != CntrctVtx.Root( tail )){
-                CntrctVtx.Contraction(head, tail);
-                CntrctVtx.Uncontracted--;
+        while (Attempt.Uncontracted > 2) {
+            edge Current = edges[ EdgeQueue[ ChosenEdgeCnt++ ] ];
+            int head = Current.getHead();
+            int tail = Current.getTail();
+            if (Attempt.getRoot( head ) != Attempt.getRoot( tail )){
+                Attempt.combine(head, tail);
             }
         }
         
         // check for remaining self-loop
         int crossingEdge = 0;
-        for (int i = 0; i< EdgesCnt-chosenEdgesCnt; i++) {
-            edge CurrentEdge = edges[ EdgePickList[ chosenEdgesCnt+i ] ];
-            int head = CurrentEdge.head();
-            int tail = CurrentEdge.tail();
-            if (CntrctVtx.Root( head ) != CntrctVtx.Root( tail )) {
+        for (int i = 0; i< EdgesCnt-ChosenEdgeCnt; i++) {
+            edge CurrentEdge = edges[ EdgeQueue[ ChosenEdgeCnt+i ] ];
+            int head = CurrentEdge.getHead();
+            int tail = CurrentEdge.getTail();
+            if (Attempt.getRoot( head ) != Attempt.getRoot( tail )) {
                  crossingEdge++;
             }
         }
@@ -173,7 +166,9 @@ int main(){
     
     end = time(NULL);
     
-    std::cout<<"# of crossing edges in the min cut: "<<count<<std::endl<<"Use "<<(end-start)<<std::endl;
+    std::cout << "# of crossing edges in the min cut: " 
+              << count << std::endl
+              << "Use " << (end - start) << std::endl;
     
     return 0;
 }
