@@ -12,13 +12,14 @@ figure; hold on;
 %               examples and 'ko' for the negative examples.
 %
 
+positive = find(y == 1);
+negative = find(y == 0);
 
+% plot positve cases
+plot( X(positive, 1), X(positive, 2),'k+');
 
-
-
-
-
-
+% plot negative cases
+plot( X(negative, 1), X( negative, 2),'ko');
 
 % =========================================================================
 
