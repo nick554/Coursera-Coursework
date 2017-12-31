@@ -17,10 +17,17 @@ grad = zeros(size(theta));
 %               Compute the partial derivatives and set grad to the partial
 %               derivatives of the cost w.r.t. each parameter in theta
 
+% theta without first term
+theta1 = theta(2 : end);
 
+% compute hypothesis function
+h = sigmoid(X * theta);
 
+% compute cost function
+J = (lambda/2 * theta1' * theta1 - ((1 - y)' * log(1 - h) + y' * log(h))) / m;
 
-
+% compute gradient
+grad = X' * (h - y) / m + lambda / m * [0; theta1];
 
 % =============================================================
 

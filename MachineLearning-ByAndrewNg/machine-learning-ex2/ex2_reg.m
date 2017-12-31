@@ -26,7 +26,7 @@ clear ; close all; clc
 
 data = load('ex2data2.txt');
 X = data(:, [1, 2]); y = data(:, 3);
-
+%{
 plotData(X, y);
 
 % Put some labels
@@ -39,8 +39,7 @@ ylabel('Microchip Test 2')
 % Specified in plot order
 legend('y = 1', 'y = 0')
 hold off;
-
-
+%}
 %% =========== Part 1: Regularized Logistic Regression ============
 %  In this part, you are given a dataset with data points that are not
 %  linearly separable. However, you would still like to use logistic
