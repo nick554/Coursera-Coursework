@@ -21,13 +21,19 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+% add bias term
+X = [ones(m, 1), X];
 
+% compute activations to form new input for next layer
+newX = sigmoid( X * Theta1');
 
+% compute output
+newX = [ones( size(newX,1), 1), newX];
+output = newX * Theta2';
 
-
-
-
-
+% find the most possible
+[tmp, p] = max( output' );
+p = p';
 
 % =========================================================================
 
