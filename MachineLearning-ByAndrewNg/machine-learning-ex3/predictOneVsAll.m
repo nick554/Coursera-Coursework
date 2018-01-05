@@ -30,13 +30,13 @@ X = [ones(m, 1) X];
 %       for each row.
 %       
 
+% calculate for every output
+probability = X * all_theta';
 
-
-
-
-
+% find the most possible result
+[a,p] = max(probability');
+p = p';
 
 % =========================================================================
-
 
 end
