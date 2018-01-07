@@ -39,6 +39,23 @@ Theta2_grad = zeros(size(Theta2));
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
 %
+
+% feedforward the neural network
+a1 = [ones(m,1) X];
+z2 = a1 * Theta1';
+a2 = sigmoid( z2 );
+a2 = [ones(m, 1) a2];
+z3 = a2 * Theta2';
+h = sigmoid(z3);
+
+% calculate cost
+tmp = log(h ./ (1 - h));
+J = sum( sum( log(1 - h)));
+for i = 1:m
+    J = J + tmp(i, y(i));
+end
+J = - J / m;
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
