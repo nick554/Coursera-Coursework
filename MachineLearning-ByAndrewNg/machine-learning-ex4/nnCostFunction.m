@@ -74,6 +74,27 @@ J = J + lambda/2/m * ( sum(sum( Theta1(:, 2:end).^2 )) + sum( sum( Theta2(:, 2:e
 %               over the training examples if you are implementing it for the 
 %               first time.
 %
+
+% for output layer
+newY = zeros(m,num_labels);
+for i = 1:m
+    newY(i,y(i)) = 1;
+end
+d3 = h - newY;
+
+% for hidden layer
+d2 = ( d3 * Theta2(:,2:end) ) .* sigmoidGradient(z2);
+
+% accumulate the gradient
+D1 = zeros(hidden_layer_size, input_layer_size + 1);
+D2 = zeros(num_labels, hidden_layer_size + 1);
+for i = 1:m
+    D1 += d2(i,:)' * a1(i, :); 
+    D2 += d3(i,:)' * a2(i, :);
+end
+Theta1_grad = D1 / m;
+Theta2_grad = D2 / m;
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
