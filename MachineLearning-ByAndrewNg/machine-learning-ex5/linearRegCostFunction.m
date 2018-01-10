@@ -20,16 +20,14 @@ grad = zeros(size(theta));
 %
 
 % hypothesis function
-h = X * theta - y;
+d = X * theta - y;
 
 % cost function with regularization
-J = ( h' * h + lambda * theta(2:end)' * theta(2:end) ) / 2 / m;
+J = ( d' * d + lambda * theta(2:end)' * theta(2:end) ) / 2 / m;
 
-% 
-
+% regularized gradient
+grad = (X' * d + lambda * [0; theta(2:end)]) / m;
 
 % =========================================================================
-
-grad = grad(:);
 
 end
