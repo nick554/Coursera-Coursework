@@ -53,11 +53,20 @@ error_val   = zeros(m, 1);
 
 % ---------------------- Sample Solution ----------------------
 
+% number of validation examples
+v = size(Xval,1);
 
+for i = 1 : m
+i
+    % train the model for parameter
+    theta = trainLinearReg(X(1:i, :), y(1:i), lambda);
 
-
-
-
+    % calculate the training error
+    d_t = X(1:i,:) * theta - y(1:i);
+    d_v = Xval * theta - yval;
+    error_train(i) = d_t' * d_t / i / 2;
+    error_val(i)   = d_v' * d_v / v / 2;
+end
 
 % -------------------------------------------------------------
 
