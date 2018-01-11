@@ -57,7 +57,6 @@ error_val   = zeros(m, 1);
 v = size(Xval,1);
 
 for i = 1 : m
-i
     % train the model for parameter
     theta = trainLinearReg(X(1:i, :), y(1:i), lambda);
 
