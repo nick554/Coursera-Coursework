@@ -32,7 +32,7 @@ fprintf('Loading and Visualizing Data ...\n')
 load('ex6data1.mat');
 
 % Plot training data
-% plotData(X, y);
+plotData(X, y);
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
@@ -52,7 +52,7 @@ fprintf('\nTraining Linear SVM ...\n')
 % boundary varies (e.g., try C = 1000)
 C = 1;
 model = svmTrain(X, y, C, @linearKernel, 1e-3, 20);
-% visualizeBoundaryLinear(X, y, model);
+visualizeBoundaryLinear(X, y, model);
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
@@ -84,7 +84,7 @@ fprintf('Loading and Visualizing Data ...\n')
 load('ex6data2.mat');
 
 % Plot training data
-% plotData(X, y);
+plotData(X, y);
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
@@ -106,7 +106,7 @@ C = 1; sigma = 0.1;
 % faster. However, in practice, you will want to run the training to
 % convergence.
 model= svmTrain(X, y, C, @(x1, x2) gaussianKernel(x1, x2, sigma)); 
-% visualizeBoundary(X, y, model);
+visualizeBoundary(X, y, model);
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
