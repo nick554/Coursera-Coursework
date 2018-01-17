@@ -22,8 +22,8 @@ idx = zeros(size(X,1), 1);
 %
 
 for m = 1 : size(X,1)
-    tmp = [1;1;1] * X(m, :) - centroids;
-    distance = sum(tmp .^ 2);
+    tmp = ones(K,1) * X(m, :) - centroids;
+    distance = sum(tmp .^ 2, 2);
     [Min, idx(m)] = min(distance);
 end
 
