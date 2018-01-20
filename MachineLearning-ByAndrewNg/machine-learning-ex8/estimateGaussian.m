@@ -21,14 +21,18 @@ sigma2 = zeros(n, 1);
 %               should contain variance of the i-th feature.
 %
 
+% compute mean in row vector
+mu = sum(X) / m;
 
+% compute difference
+delta = X - ones(m,1) * mu;
 
+% compute variance
+sigma2 = sum(delta .^ 2) / m;
 
-
-
-
-
-
+% transpose
+mu = mu';
+sigma2 = sigma2';
 
 % =============================================================
 
