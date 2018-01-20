@@ -40,21 +40,15 @@ Theta_grad = zeros(size(Theta));
 %                     partial derivatives w.r.t. to each element of Theta
 %
 
+% calculate for the difference between prediction and the label
+delta = (X * Theta' - Y) .* R;
+
 % cost function
-J = sum(sum((X * Theta' - Y) .^ 2 .* R)) / 2;
+J = sum(sum(delta  .^ 2)) / 2;
 
-
-
-
-
-
-
-
-
-
-
-
-
+% gradient
+X_grad = delta * Theta;
+Theta_grad = delta' * X;
 
 % =============================================================
 
