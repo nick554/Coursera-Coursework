@@ -49,8 +49,8 @@ J = sum(sum(delta .^ 2)) / 2;
 J += lambda / 2 * (sum(sum(Theta .^ 2)) + sum(sum(X .^ 2)));
 
 % gradient
-X_grad = delta * Theta;
-Theta_grad = delta' * X;
+X_grad = delta * Theta + lambda * X;
+Theta_grad = delta' * X + lambda * Theta;
 
 % =============================================================
 
