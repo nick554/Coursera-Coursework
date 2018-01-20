@@ -44,7 +44,9 @@ Theta_grad = zeros(size(Theta));
 delta = (X * Theta' - Y) .* R;
 
 % cost function
-J = sum(sum(delta  .^ 2)) / 2;
+J = sum(sum(delta .^ 2)) / 2;
+% add regularized term
+J += lambda / 2 * (sum(sum(Theta .^ 2)) + sum(sum(X .^ 2)));
 
 % gradient
 X_grad = delta * Theta;
