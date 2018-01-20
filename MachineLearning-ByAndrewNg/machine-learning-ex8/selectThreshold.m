@@ -10,6 +10,11 @@ bestEpsilon = 0;
 bestF1 = 0;
 F1 = 0;
 
+% get all p_idx = tp + fn and n_idx = tn + fp
+p_idx = find(yval == 1);
+n_idx = find(yval == 0);
+
+
 stepsize = (max(pval) - min(pval)) / 1000;
 for epsilon = min(pval):stepsize:max(pval)
     
@@ -23,17 +28,16 @@ for epsilon = min(pval):stepsize:max(pval)
     % Note: You can use predictions = (pval < epsilon) to get a binary vector
     %       of 0's and 1's of the outlier predictions
 
-
-
-
-
-
-
-
-
-
-
-
+    % analysis result
+    tp = length(find(pval(p_idx) <= epsilon));
+    fp = length(find(pval(n_idx) <= epsilon));
+    fn = length(find(pval(p_idx) > epsilon));
+    % compute precision and recall
+    prec = tp / (tp + fp);
+    rec  = tp / (tp + fn);
+    
+    % compute F1 score
+    F1 = 2 * prec * rec / (prec + rec);
 
     % =============================================================
 
